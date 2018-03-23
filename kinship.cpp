@@ -1,21 +1,3 @@
-/*
- cd /lustre/janus_scratch/rata8212/PRJ023_Kinship/
- make
- 
- #g++ -std=c++0x kinship.cpp -o kinship
-
- 
- test1:
- kinship --file_pedigree pedigree1.txt --out test1
- 
- 
- to test:
- cd /lustre/janus_scratch/rata8212/PRJ017_Shared_Hap
- rm file_pedigree_list.txt; for i in $(seq 5 10); do echo -e out1.info.pop1.gen$i.txt >> file_pedigree_list.txt; done
- kinship --file_pedigree_list file_pedigree_list.txt
-
- 
- */
 
 #include <stdio.h>
 #include <unistd.h>
