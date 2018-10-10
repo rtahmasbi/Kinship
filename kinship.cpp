@@ -11,7 +11,7 @@
 #include <cmath> //pow
 #include <algorithm> //find
 
-#define VER "1.0"
+#define VER "1.5; update 2018-10-09"
 
 
 
@@ -51,7 +51,7 @@ public:
 
 
 
-int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen);
+bool ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen);
 bool ras_read_pedigree_file(std::string file_pedigree, std::vector<Human> &humans);
 void ras_help(void);
 int ras_read_in_gen_file(std::string in_gen_info, std::vector<std::string> &vec_gen_file_name);
@@ -125,7 +125,10 @@ int main(int argc, char ** argv)
         {
             if(igen==ngen-1) pedigree_st=humans.size(); // compute just for the last generation
             if (!ras_read_fam_file(vec_gen_file_name[igen], humans, igen+1))
+            {
+                std::cout << "Error in ras_read_fam_file" << std::endl;
                 return -1;
+            }
         }
     }
 
@@ -167,7 +170,7 @@ bool write_similarities(std::string file_out, const std::vector<Human> &humans, 
             for (long int j=pedigree_st; j<=i; j++)
             {
                 myfile << humans[i].ID << sep << humans[j].ID << sep << ras_similarity(humans,i,j) << std::endl;
-                if (r%10000==0) std::cout << "\r " << r << " of " << tot << " wrote ..." << std::flush;
+                if (r%1000==0) std::cout << "\r " << r << " of " << tot << " wrote ..." << std::flush;
                 r++;
             }
         }
@@ -218,7 +221,7 @@ bool ras_set_index(std::vector<Human> &humans)
     long int pos;
     for (long int i=0; i<humans.size(); i++)
     {
-        if (i%1000==0)
+        if (i%10000==0)
             std::cout << "\r   " << "running index " << i << " of " << humans.size() << " ..." << std::flush;
         // ID_Father
         id=humans[i].ID_Father;
@@ -261,7 +264,7 @@ int ras_read_in_gen_file(std::string file_pedigree_list, std::vector<std::string
 
 
 
-int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
+bool ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
 {
     char sep=' ';
 
@@ -272,7 +275,7 @@ int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
     if(!ifile)
     {
         std::cout << "Error: can not open the file ["+ file_name +"] to read." << std::endl;
-        return 0;
+        return false;
     }
 
     std::string line;
@@ -298,6 +301,7 @@ int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
         h.ID_Mother=ID_Mother;
         humans.push_back(h);
     }
+    return true;
 }
 
 
