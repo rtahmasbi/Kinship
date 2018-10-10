@@ -170,7 +170,7 @@ bool write_similarities(std::string file_out, const std::vector<Human> &humans, 
             for (long int j=pedigree_st; j<=i; j++)
             {
                 myfile << humans[i].ID << sep << humans[j].ID << sep << ras_similarity(humans,i,j) << std::endl;
-                if (r%1000==0) std::cout << "\r " << r << " of " << tot << " wrote ..." << std::flush;
+                if (r%10000==0) std::cout << "\r " << r << " of " << tot << " wrote ..." << std::flush;
                 r++;
             }
         }
