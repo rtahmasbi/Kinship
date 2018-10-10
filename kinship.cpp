@@ -21,8 +21,8 @@ public:
     std::string ID;
     std::string ID_Father;
     std::string ID_Mother;
-    int idx_fa;
-    int idx_mo;
+    long int idx_fa;
+    long int idx_mo;
 
     Human() {};
 
@@ -51,12 +51,12 @@ public:
 
 
 
-int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen);
+long int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, long int gen);
 bool ras_read_pedigree_file(std::string file_pedigree, std::vector<Human> &humans);
 void ras_help(void);
 int ras_read_in_gen_file(std::string in_gen_info, std::vector<std::string> &vec_gen_file_name);
-double ras_similarity(const std::vector<Human> &humans, int i, int j);
-bool write_similarities(std::string file_out, const std::vector<Human> &humans, int pedigree_st, int pedigree_en);
+double ras_similarity(const std::vector<Human> &humans, long int i, long int j);
+bool write_similarities(std::string file_out, const std::vector<Human> &humans, long int pedigree_st, long int pedigree_en);
 bool ras_set_index(std::vector<Human> &humans);
 
 
@@ -106,7 +106,7 @@ int main(int argc, char ** argv)
     // read human info from pedigree or fam files
     std::vector<Human> humans;
     humans.clear();
-    int pedigree_st=0, pedigree_en=0;
+    long int pedigree_st=0, pedigree_en=0;
 
 
     if(generation_info_type==1)
@@ -153,18 +153,18 @@ int main(int argc, char ** argv)
 }
 
 
-bool write_similarities(std::string file_out, const std::vector<Human> &humans, int pedigree_st, int pedigree_en)
+bool write_similarities(std::string file_out, const std::vector<Human> &humans, long int pedigree_st, long int pedigree_en)
 {
     std::string sep=" ";
     std::ofstream myfile((file_out+".kin").c_str());
-    int tot=(pedigree_en-pedigree_st)*(pedigree_en-pedigree_st+1)/2;
-    int r=0;
+    long int tot=(pedigree_en-pedigree_st)*(pedigree_en-pedigree_st+1)/2;
+    long int r=0;
 
     if (myfile.is_open())
     {
-        for (int i=pedigree_st; i<pedigree_en; i++)
+        for (long int i=pedigree_st; i<pedigree_en; i++)
         {
-            for (int j=pedigree_st; j<=i; j++)
+            for (long int j=pedigree_st; j<=i; j++)
             {
                 myfile << humans[i].ID << sep << humans[j].ID << sep << ras_similarity(humans,i,j) << std::endl;
                 if (r%10000==0) std::cout << "\r " << r << " of " << tot << " wrote ..." << std::flush;
@@ -184,17 +184,17 @@ double ras_similarity(const std::vector<Human> &humans, int i, int j)
 
     if (i==j)
     {
-        int idx_hi_f=humans[i].idx_fa;
-        int idx_hi_m=humans[i].idx_mo;
+        long int idx_hi_f=humans[i].idx_fa;
+        long int idx_hi_m=humans[i].idx_mo;
 
         return 1+ras_similarity(humans,idx_hi_f,idx_hi_m);
     }
     else
     {
-        int idx_hi_f=humans[i].idx_fa;
-        int idx_hi_m=humans[i].idx_mo;
-        int idx_hj_f=humans[j].idx_fa;
-        int idx_hj_m=humans[j].idx_mo;
+        long int idx_hi_f=humans[i].idx_fa;
+        long int idx_hi_m=humans[i].idx_mo;
+        long int idx_hj_f=humans[j].idx_fa;
+        long int idx_hj_m=humans[j].idx_mo;
 
         double d_i_jf=0, d_i_jm=0, d_j_if=0, d_j_im=0;
         if (idx_hj_f>-1)
@@ -215,8 +215,8 @@ double ras_similarity(const std::vector<Human> &humans, int i, int j)
 bool ras_set_index(std::vector<Human> &humans)
 {
     std::string id;
-    int pos;
-    for (int i=0; i<humans.size(); i++)
+    long int pos;
+    for (long int i=0; i<humans.size(); i++)
     {
         if (i%1000==0)
             std::cout << "\r   " << "running index " << i << " of " << humans.size() << " ..." << std::flush;
