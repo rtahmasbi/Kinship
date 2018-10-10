@@ -51,7 +51,7 @@ public:
 
 
 
-long int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, long int gen);
+long int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen);
 bool ras_read_pedigree_file(std::string file_pedigree, std::vector<Human> &humans);
 void ras_help(void);
 int ras_read_in_gen_file(std::string in_gen_info, std::vector<std::string> &vec_gen_file_name);
