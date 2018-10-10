@@ -177,7 +177,7 @@ bool write_similarities(std::string file_out, const std::vector<Human> &humans, 
 }
 
 
-double ras_similarity(const std::vector<Human> &humans, int i, int j)
+double ras_similarity(const std::vector<Human> &humans, long int i, long int j)
 {
     if (i==-1 || j==-1)
         return 0;
