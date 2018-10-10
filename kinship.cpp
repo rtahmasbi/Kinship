@@ -25,7 +25,7 @@ public:
     int idx_mo;
 
     Human() {};
-    
+
     Human(std::string id, std::string id_fa, std::string id_mo) {
         ID = id;
         ID_Father = id_fa;
@@ -44,7 +44,7 @@ public:
     {
         return h1.ID == h2.ID;
     }
-    
+
 };
 
 
@@ -100,21 +100,21 @@ int main(int argc, char ** argv)
             std::cout << "Error: unknown parameter [" << s << "]" << std::endl;
         }
     }
-    
-    
+
+
     /////////////////////////////////////////////////////////
     // read human info from pedigree or fam files
     std::vector<Human> humans;
     humans.clear();
     int pedigree_st=0, pedigree_en=0;
 
-    
+
     if(generation_info_type==1)
     {
         if(!ras_read_pedigree_file(file_pedigree, humans))
             return -1;
     }
-    
+
     if(generation_info_type==2)
     {
         std::vector<std::string> vec_gen_file_name;
@@ -131,24 +131,24 @@ int main(int argc, char ** argv)
 
     std::cout << " Size of pedigree for all the specified generations = " << humans.size() << std::endl;
     pedigree_en=humans.size();
-    
+
     /////////////////////////////////////////////////////////
     std::cout << " Start finding indexes" << std::endl;
     ras_set_index(humans);
-    
-    
+
+
     /////////////////////////////////////////////////////////
     // compute kinship
     std::cout << " Start computing kinship" << std::endl;
     write_similarities(file_out, humans, pedigree_st, pedigree_en);
-    
-    
+
+
     /////////////////////////////////////////////////////////
     // end
     int time_tot = time(0) - start_time;
     std::cout << std::endl << " Program Successfully finished." << std::endl;
     std::cout << "Total Run completed in " << time_tot / 3600 << " hours, " << (time_tot % 3600) / 60 << " mins, " << time_tot % 60 << " seconds." << std::endl;
-    
+
     return 0;
 }
 
@@ -159,7 +159,7 @@ bool write_similarities(std::string file_out, const std::vector<Human> &humans, 
     std::ofstream myfile((file_out+".kin").c_str());
     int tot=(pedigree_en-pedigree_st)*(pedigree_en-pedigree_st+1)/2;
     int r=0;
-    
+
     if (myfile.is_open())
     {
         for (int i=pedigree_st; i<pedigree_en; i++)
@@ -181,12 +181,12 @@ double ras_similarity(const std::vector<Human> &humans, int i, int j)
 {
     if (i==-1 || j==-1)
         return 0;
-    
+
     if (i==j)
     {
         int idx_hi_f=humans[i].idx_fa;
         int idx_hi_m=humans[i].idx_mo;
-        
+
         return 1+ras_similarity(humans,idx_hi_f,idx_hi_m);
     }
     else
@@ -195,7 +195,7 @@ double ras_similarity(const std::vector<Human> &humans, int i, int j)
         int idx_hi_m=humans[i].idx_mo;
         int idx_hj_f=humans[j].idx_fa;
         int idx_hj_m=humans[j].idx_mo;
-        
+
         double d_i_jf=0, d_i_jm=0, d_j_if=0, d_j_im=0;
         if (idx_hj_f>-1)
             d_i_jf=ras_similarity(humans,i,idx_hj_f);
@@ -218,6 +218,8 @@ bool ras_set_index(std::vector<Human> &humans)
     int pos;
     for (int i=0; i<humans.size(); i++)
     {
+        if (i%1000==0)
+            std::cout << "\r   " << "running index " << i << " of " << humans.size() << " ..." << std::flush;
         // ID_Father
         id=humans[i].ID_Father;
         pos = std::find(humans.begin(), humans.end(), Human(id,"NA","NA")) - humans.begin();
@@ -229,6 +231,7 @@ bool ras_set_index(std::vector<Human> &humans)
         if(pos >= humans.size()) pos=-1;
         humans[i].idx_mo=pos;
     }
+    std::cout << "\r " << "ras_set_index done." << std::flush << std::endl;
 }
 
 
@@ -261,34 +264,34 @@ int ras_read_in_gen_file(std::string file_pedigree_list, std::vector<std::string
 int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
 {
     char sep=' ';
-    
-    
+
+
     std::string file_name=file_fam;
     std::ifstream ifile(file_name.c_str());
-    
+
     if(!ifile)
     {
         std::cout << "Error: can not open the file ["+ file_name +"] to read." << std::endl;
         return 0;
     }
-    
+
     std::string line;
-    
+
     // discard the first line which is header
     std::getline(ifile, line);
-    
+
     while (std::getline(ifile, line))
     {
         std::istringstream iss(line);
         std::string token;
-        
+
         std::getline(iss, token, sep); // ID
         std::string ID=std::to_string(gen) + "$" + token;
         std::getline(iss, token, sep); // ID_Father
         std::string ID_Father=std::to_string(gen-1) + "$" + token;
         std::getline(iss, token, sep); // ID_Mother
         std::string ID_Mother=std::to_string(gen-1) + "$" + token;
-        
+
         Human h;
         h.ID=ID;
         h.ID_Father=ID_Father;
@@ -303,34 +306,34 @@ int ras_read_fam_file(std::string file_fam, std::vector<Human> &humans, int gen)
 bool ras_read_pedigree_file(std::string file_pedigree, std::vector<Human> &humans)
 {
     char sep=' ';
-    
-    
+
+
     std::string file_name=file_pedigree;
     std::ifstream ifile(file_name.c_str());
-    
+
     if(!ifile)
     {
         std::cout << "Error: can not open the file ["+ file_name +"] to read." << std::endl;
         return false;
     }
-    
+
     std::string line;
-    
+
     // discard the first line which is header
     std::getline(ifile, line);
-    
+
     while (std::getline(ifile, line))
     {
         std::istringstream iss(line);
         std::string token;
-        
+
         std::getline(iss, token, sep); // ID
         std::string ID=token;
         std::getline(iss, token, sep); // ID_Father
         std::string ID_Father=token;
         std::getline(iss, token, sep); // ID_Mother
         std::string ID_Mother=token;
-        
+
         Human h;
         h.ID=ID;
         h.ID_Father=ID_Father;
@@ -354,4 +357,3 @@ void ras_help(void)
     std::cout << "         each file has (3+) columns: ID, ID_Father, ID_Mother" << std::endl;
 
 }
-
