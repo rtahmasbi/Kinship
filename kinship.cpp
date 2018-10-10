@@ -221,7 +221,7 @@ bool ras_set_index(std::vector<Human> &humans)
     long int pos;
     for (long int i=0; i<humans.size(); i++)
     {
-        if (i%10000==0)
+        if (i%1000==0)
             std::cout << "\r   " << "running index " << i << " of " << humans.size() << " ..." << std::flush;
         // ID_Father
         id=humans[i].ID_Father;
@@ -234,7 +234,7 @@ bool ras_set_index(std::vector<Human> &humans)
         if(pos >= humans.size()) pos=-1;
         humans[i].idx_mo=pos;
     }
-    std::cout << "\r " << "ras_set_index done." << std::flush << std::endl;
+    std::cout << "; done." << std::flush << std::endl;
 }
 
 
